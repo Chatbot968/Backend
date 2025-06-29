@@ -10,6 +10,7 @@ const __dirname = path.resolve();
 const CONFIGS_DIR = path.join(__dirname, 'backend', 'configs');
 
 app.use(cors({ origin: '*' }));
+console.log('CORS enabled for all origins');
 app.use(express.json());
 
 // GET config dynamique pour le widget
