@@ -194,7 +194,20 @@ app.post('/api/ask', async (req, res) => {
       body: JSON.stringify({ question })
     });
     
-    const webhookData = await webhookRes.json();
+    // Ajout de logs détaillés et gestion d'erreur JSON
+    const rawText = await webhookRes.text();
+    console.log('Webhook status:', webhookRes.status);
+    console.log('Webhook raw response:', rawText);
+    let webhookData;
+    try {
+      webhookData = JSON.parse(rawText);
+    } catch (e) {
+      console.error('Erreur de parsing JSON du webhook:', e);
+      return res.status(502).json({ error: 'Réponse du webhook invalide', details: e.message, raw: rawText });
+    }
+    if (!webhookData || typeof webhookData.answer === 'undefined') {
+      return res.status(502).json({ error: 'Réponse du webhook incomplète', raw: rawText });
+    }
     return res.json({ answer: webhookData.answer });
   } catch (e) {
     console.error('❌ Erreur webhook:', e);
