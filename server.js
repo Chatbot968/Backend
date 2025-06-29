@@ -7,8 +7,8 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Configuration Supabase
-const supabaseUrl = "https://hgqndkfkuitafuzawuxl.supabase.co";
-const supabaseKey = "yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhncW5ka2ZrdWl0YWZ1emF3dXhsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NzkzNDg5MiwiZXhwIjoyMDYzNTEwODkyfQ.BexhC9LB-7Aea67mUPQI1OMVIZonH7-Z5EOOzq7GHDY";
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 app.use(cors({ origin: '*' }));
@@ -39,7 +39,7 @@ app.get('/configs/:client_id.json', async (req, res) => {
     }
     
     const { data, error } = await supabase
-      .from('client_config')
+      .from('config_client')
       .select('*')
       .eq('client_id', client_id)
       .single();
@@ -79,7 +79,7 @@ app.get('/configs/:client_id.json', async (req, res) => {
 app.get('/api/configs', async (req, res) => {
   try {
     const { data, error } = await supabase
-      .from('client_config')
+      .from('config_client')
       .select('*')
       .order('created_at', { ascending: false });
 
@@ -100,7 +100,7 @@ app.post('/api/configs', async (req, res) => {
     if (!client_id) return res.status(400).json({ error: 'client_id required' });
 
     const { error } = await supabase
-      .from('client_config')
+      .from('config_client')
       .insert([{
         client_id,
         ...data,
@@ -123,7 +123,7 @@ app.put('/api/configs/:client_id', async (req, res) => {
   try {
     const { client_id } = req.params;
     const { data: existingConfig } = await supabase
-      .from('client_config')
+      .from('config_client')
       .select('id')
       .eq('client_id', client_id)
       .single();
@@ -133,7 +133,7 @@ app.put('/api/configs/:client_id', async (req, res) => {
     }
 
     const { error } = await supabase
-      .from('client_config')
+      .from('config_client')
       .update({
         ...req.body,
         updated_at: new Date().toISOString()
@@ -156,7 +156,7 @@ app.delete('/api/configs/:client_id', async (req, res) => {
     const { client_id } = req.params;
     
     const { error } = await supabase
-      .from('client_config')
+      .from('config_client')
       .delete()
       .eq('client_id', client_id);
 
@@ -179,7 +179,7 @@ app.post('/api/ask', async (req, res) => {
     }
 
     const { data: config, error } = await supabase
-      .from('client_config')
+      .from('config_client')
       .select('webhook_url')
       .eq('client_id', client_id)
       .single();
