@@ -1,0 +1,11 @@
+{
+  "client_id": "testclient",
+  "logo_url": "https://img.icons8.com/?size=100&id=1349&format=png&color=000000",
+  "color_primary": "#4299e1",
+  "webhook_url": "https://example.com/webhook",
+  "bot_description": "Assistant virtuel de test",
+  "banner_color": "#2d3748",
+  "chat_background_color": "#f7fafb",
+  "text_color": "#2d3748",
+  "is_active": true
+} 
