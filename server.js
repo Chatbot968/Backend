@@ -39,10 +39,9 @@ app.get('/configs/:client_id.json', async (req, res) => {
     }
     
     const { data, error } = await supabase
-      .from('client_configs')
+      .from('client_config')
       .select('*')
       .eq('client_id', client_id)
-      .eq('is_active', true)
       .single();
 
     if (error || !data) {
@@ -80,7 +79,7 @@ app.get('/configs/:client_id.json', async (req, res) => {
 app.get('/api/configs', async (req, res) => {
   try {
     const { data, error } = await supabase
-      .from('client_configs')
+      .from('client_config')
       .select('*')
       .order('created_at', { ascending: false });
 
@@ -101,7 +100,7 @@ app.post('/api/configs', async (req, res) => {
     if (!client_id) return res.status(400).json({ error: 'client_id required' });
 
     const { error } = await supabase
-      .from('client_configs')
+      .from('client_config')
       .insert([{
         client_id,
         ...data,
@@ -124,7 +123,7 @@ app.put('/api/configs/:client_id', async (req, res) => {
   try {
     const { client_id } = req.params;
     const { data: existingConfig } = await supabase
-      .from('client_configs')
+      .from('client_config')
       .select('id')
       .eq('client_id', client_id)
       .single();
@@ -134,7 +133,7 @@ app.put('/api/configs/:client_id', async (req, res) => {
     }
 
     const { error } = await supabase
-      .from('client_configs')
+      .from('client_config')
       .update({
         ...req.body,
         updated_at: new Date().toISOString()
@@ -157,7 +156,7 @@ app.delete('/api/configs/:client_id', async (req, res) => {
     const { client_id } = req.params;
     
     const { error } = await supabase
-      .from('client_configs')
+      .from('client_config')
       .delete()
       .eq('client_id', client_id);
 
@@ -180,10 +179,9 @@ app.post('/api/ask', async (req, res) => {
     }
 
     const { data: config, error } = await supabase
-      .from('client_configs')
+      .from('client_config')
       .select('webhook_url')
       .eq('client_id', client_id)
-      .eq('is_active', true)
       .single();
 
     if (error || !config) {
