@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3001;
 const __dirname = path.resolve();
 const CONFIGS_DIR = path.join(__dirname, 'backend', 'configs');
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 // GET config dynamique pour le widget
