@@ -205,10 +205,12 @@ app.post('/api/ask', async (req, res) => {
       console.error('Erreur de parsing JSON du webhook:', e);
       return res.status(502).json({ error: 'Réponse du webhook invalide', details: e.message, raw: rawText });
     }
-    if (!webhookData || typeof webhookData.answer === 'undefined') {
+    if (!webhookData || (typeof webhookData.answer === 'undefined' && typeof webhookData.texte === 'undefined')) {
       return res.status(502).json({ error: 'Réponse du webhook incomplète', raw: rawText });
     }
-    return res.json({ answer: webhookData.answer });
+    // Prend 'answer' si dispo, sinon 'texte'
+    const answer = typeof webhookData.answer !== 'undefined' ? webhookData.answer : webhookData.texte;
+    return res.json({ answer });
   } catch (e) {
     console.error('❌ Erreur webhook:', e);
     return res.status(500).json({ error: 'Webhook error', details: e.message });
